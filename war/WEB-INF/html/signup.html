@@ -1,0 +1,60 @@
+
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>SignUp</title>
+<script type="text/javascript" src="js/signup.js"></script>
+</head>
+
+<body style="margin-left: 500px; height: 260px; width: 500px;">
+
+	<form name="signupFrom" id="signupFrom" action="/signup" method="post">
+		<table>
+
+			<tr>
+				<td><label>FirstName:</label></td>
+				<td><input type="text" name="firstName" id="firstName"><span
+					id="firstNameErrorMessage" style="color: red; display: none">First
+						Name is empty</span></td>
+			</tr>
+
+			<tr>
+				<td><label>LastName:</label></td>
+				<td><input type="text" name="lastName" id="lastName"><span
+					id="lastNameErrorMessage" style="color: red; display: none">Last
+						Name is empty</span></td>
+			</tr>
+
+			<tr>
+				<td><label>EmailId: </label></td>
+				<td><input type="text" name="emailId" id="emailId"><span
+					id="emailIdErrorMessage" style="color: red; display: none">Email
+						Id is empty</span></td>
+			</tr>
+
+			<tr>
+				<td><label>Password:</label></td>
+				<td><input type="password" name="password" id="password"><span
+					id="passwordErrorMessage" style="color: red; display: none">password is empty.
+				</span></td>
+			</tr>
+
+			<tr>
+				<td><input type="radio" name="gender" value="male">Male</td>
+				<td><input type="radio" name="gender" value="female">Female</td>
+			</tr>
+
+			<tr>
+				<td><label>DateOfBirth:</label></td>
+				<td><input type="date" name="birthDay" id="birthDay"></td>
+			</tr>
+
+			<tr>
+				<td><input type="button" onclick="sumbitSignup()"
+					value="Submit"></td>
+			</tr>
+
+		</table>
+	</form>
+</body>
+</html>
