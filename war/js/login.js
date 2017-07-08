@@ -6,7 +6,6 @@ function isValidLogin() {
 	if (!emailId) {
 		// shows error message span
 		document.getElementById("emailIdErrorMessage").style.display = "block";
-
 	} else {
 		// hides error message span
 		document.getElementById("emailIdErrorMessage").style.display = "none";
@@ -25,8 +24,7 @@ function isValidLogin() {
 	// If both emailid and password is valid, form submitted
 	if (emailId && password) {
 		return true;
-	}
-	else{
+	} else {
 		return false;
 	}
 
@@ -38,25 +36,60 @@ function submitLogin() {
 		form.submit();
 	}
 }
-
-function validationLogin()
-{
-	// asynchronous-call back function
-
+function validationLogin() {
 	var xhttp = new XMLHttpRequest();
-	xhttp.open("POST", "/login", true);
+	var message = "";
 	xhttp.onreadystatechange = function() {
-		if (this.readyState == 4 && this.status == 200) {
-			// Typical action to be performed when the document is ready:
-			document.getElementById("messageDiv").innerHTML ='<strong>'+ xhttp.responseText+'</strong>';
+		message += "";
+		if (this.readyState == 0) {
+
 		}
-	};
-	
-	xhttp.setRequestHeader('content-type','application/x-www-form-urlencoded');
-	var name=document.getElementById('emailId').value;
-	var password=document.getElementById('password').value;
-	var params = "emailId=" + name
-			+ "&password=" + password;
-	
-	xhttp.send(params);
+
+		if (this.readyState == 1) {
+
+			message = "Open method is called.";
+			document.getElementById("messageDiv").innerHTML += '<strong style="color:yellow">'
+					+ message + '</strong>';
+		}
+		if (this.readyState == 2) {
+			message = "Server receive the request.";
+			document.getElementById("messageDiv").innerHTML += '<strong style="color:skyblue">'
+					+ message + '</strong>';
+		}
+		xhttp.onprogress = function() {
+			message = "3.Request is in process.";
+			document.getElementById("messageDiv").innerHTML += '<strong style="color:blue">'
+					+ message + '</strong>';
+		}
+		xhttp.onload = function() {
+			message = "4.response is ready.";
+
+			// document.getElementById("div").style.visibility = "hidden";
+			document.getElementById("messageDiv").innerHTML += '<strong style="color:green">'
+					+ message + '</strong>'+'<br>';
+			
+			document.getElementById("messageDiv").innerHTML += '<strong >'
+					+ xhttp.responseText + '</strong>';
+		};
 	}
+	xhttp.open("POST", "/login", true);
+	xhttp.timeout = 1000;
+
+	xhttp.ontimeout = function() {
+		console.log("Time out!!!");
+	}
+	xhttp.onerror = function() {
+		console.log("some error occurs.");
+	}
+
+	xhttp.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
+	var name = document.getElementById('emailId').value;
+	if (!name) {
+		xhttp.abort();
+		console.log("Request stopped.");
+	}
+	var password = document.getElementById('password').value;
+	var params = "emailId=" + name + "&password=" + password;
+	xhttp.send(params);
+
+}
