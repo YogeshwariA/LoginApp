@@ -1,42 +1,64 @@
 package com.full.model;
 
+import java.io.Serializable;
+
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 
 @Entity
-public class User {
-	private String firstName;
-	private String lastName;
-
-	// private Long id;
+public class User implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String given_name;
+	private String family_name;
 	@Id
-	private String emailId;
+	private String email;
 	private String password;
 	private long dateofBirth;
 	private String gender;
+	//private long id;
+	private String picture;
 
-	public String getFirstName() {
-		return firstName;
+	public String getGiven_name() {
+		return given_name;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
+	public void setGiven_name(String given_name) {
+		this.given_name = given_name;
 	}
 
-	public String getLastName() {
-		return lastName;
+	public String getFamily_name() {
+		return family_name;
 	}
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+	public void setFamily_name(String family_name) {
+		this.family_name = family_name;
 	}
 
-	public String getEmailId() {
-		return emailId;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setEmailId(String emailId) {
-		this.emailId = emailId;
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	/*public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
+	}
+*/
+	public String getPicture() {
+		return picture;
+	}
+
+	public void setPicture(String picture) {
+		this.picture = picture;
 	}
 
 	public String getPassword() {
@@ -62,11 +84,8 @@ public class User {
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
-
-	/*
-	 * public Long getId() { return id; }
-	 * 
-	 * public void setId(Long id) { this.id = id; }
-	 */
-
+@Override
+public String toString() {
+	return given_name + " "+ family_name;
+}
 }

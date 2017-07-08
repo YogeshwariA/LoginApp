@@ -7,31 +7,41 @@
 </head>
 
 <body style="margin-left: 500px; height: 260px; width: 260px;">
-	<form action="/gotosignup" method="get">
-		<table>
-			<tr>
-				<td><input type="submit" value="SignUp"></td>
-			</tr>
-		</table>
-	</form>
+	<div>
+		<form action="/gotosignup" method="get">
+			<table>
+				<tr>
+					<td><input type="submit" value="SignUp"></td>
+				</tr>
+			</table>
+		</form>
+
+		
 		<table>
 			<tr>
 				<td><label>EmailId: </label></td>
-				<td><input type="text" name="emailId" id="emailId"><span id="emailIdErrorMessage" style="color:red;display:none">Email is Empty</span></td>
+				<td><input type="text" name="emailId" id="emailId"><span
+					id="emailIdErrorMessage" style="color: red; display: none">Email
+						is Empty</span></td>
 			</tr>
-
 			<tr>
 				<td><label>Password: </label></td>
-				<td><input type="password" name="password" id="password"><span id="passwordErrorMessage" style="color:red;display:none">Password is Empty</span></td>
+				<td><input type="password" name="password" id="password"><span
+					id="passwordErrorMessage" style="color: red; display: none">Password
+						is Empty</span></td>
 			</tr>
 
 			<tr>
-				<td><input type="button" value="Login" onclick=" validationLogin()"></td>
+				<td><input type="button" value="Login"
+					onclick=" validationLogin()">
+					<input type="button" value="Login With Google"
+					onclick="goToGoogle()">
+					</td>
 			</tr>
-
 		</table>
-	
-<br>
-<span style="color:green" id="messageDiv"></span>
+	</div>
+	<div>
+		<br> <span style="color: green" id="messageDiv"></span><br>
+	</div>
 </body>
 </html>

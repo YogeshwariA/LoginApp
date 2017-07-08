@@ -1,8 +1,13 @@
 package com.full.servlet;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -26,6 +31,9 @@ import javax.xml.bind.DatatypeConverter;
 import com.full.model.User;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 /*import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
@@ -47,7 +55,13 @@ public class LoginServlet extends HttpServlet {
 		if ("post".equalsIgnoreCase(method)) {
 			doPost(req, resp);
 		} else if ("get".equalsIgnoreCase(method)) {
-			doGet(req, resp);
+			if ((req.getRequestURI().contains("oauth2callback"))) {
+				try {
+					signUpWithGoogle(req, resp);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
 
@@ -63,14 +77,12 @@ public class LoginServlet extends HttpServlet {
 				try {
 					signUpUser(req, resp);
 				} catch (ParseException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-
 			}
+
 		} catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException
 				| NoSuchPaddingException | InvalidAlgorithmParameterException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -80,8 +92,6 @@ public class LoginServlet extends HttpServlet {
 			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
 		String emailId = req.getParameter("emailId");
 		String password = req.getParameter("password");
-		System.out.println(emailId);
-		System.out.println(password);
 		if ((emailId != null && !emailId.isEmpty()) && (password != null && !password.isEmpty())) {
 			User user = ObjectifyService.ofy().load().type(User.class).id(emailId).now();
 			if (user == null) {
@@ -91,7 +101,7 @@ public class LoginServlet extends HttpServlet {
 				dbPassword = decrypt(dbPassword, "E1BB465D57CAE7ACDBBE8091F9CE83DF");
 				if (dbPassword.equals(password)) {
 					HttpSession session = req.getSession(true);
-					session.setAttribute("username", user.getFirstName());
+					session.setAttribute("username", user.getGiven_name());
 					req.getRequestDispatcher("/main").forward(req, resp);
 				} else {
 					resp.getWriter().println("Username or Password is wrong");
@@ -127,10 +137,10 @@ public class LoginServlet extends HttpServlet {
 			User user = ObjectifyService.ofy().load().type(User.class).id(emailId).now();
 			if (user == null) {
 				User details = new User();
-				details.setFirstName(firstName);
+				details.setGiven_name(firstName);
 				details.setDateofBirth(new SimpleDateFormat("yyyy-dd-mm").parse(dateOfBirth).getTime());
-				details.setEmailId(emailId);
-				details.setLastName(lastName);
+				details.setEmail(emailId);
+				details.setFamily_name(lastName);
 				details.setPassword(encrypt(password, "E1BB465D57CAE7ACDBBE8091F9CE83DF"));
 				details.setGender(gender);
 				/*
@@ -154,6 +164,54 @@ public class LoginServlet extends HttpServlet {
 		} else {
 			resp.getWriter().println("Please give correct credentials");
 		}
+	}
+
+	private void signUpWithGoogle(HttpServletRequest req, HttpServletResponse resp)
+			throws IOException, ServletException {
+		String code = req.getParameter("code");
+		String urlParameters = "code=" + code
+				+ "&client_id=657816056670-m7lhu5lemeqpittvac8nlfqlffk3l5ki.apps.googleusercontent.com"
+				+ "&client_secret=q0qS6sVUNyAhh2-TrdUpQwlx" + "&redirect_uri=http://localhost:8888/login/oauth2callback"
+				+ "&grant_type=authorization_code";
+
+		URL url = new URL("https://accounts.google.com/o/oauth2/token");
+		URLConnection urlConn = url.openConnection();
+
+		urlConn.setDoOutput(true);
+		OutputStreamWriter writer = new OutputStreamWriter(urlConn.getOutputStream());
+		writer.write(urlParameters);
+		writer.flush();
+
+		BufferedReader in = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
+		String decodedString;
+		StringBuilder result = new StringBuilder();
+
+		while ((decodedString = in.readLine()) != null) {
+			result.append(decodedString);
+		}
+		in.close();
+
+		System.out.println("Result: " + result.toString());
+
+		JsonObject json = (JsonObject) new JsonParser().parse(result.toString());
+		String access_token = json.get("access_token").getAsString();
+
+		url = new URL("https://www.googleapis.com/oauth2/v1/userinfo?access_token=" + access_token);
+		urlConn = url.openConnection();
+		StringBuilder outputString = new StringBuilder();
+		String line = "";
+		BufferedReader reader = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
+		while ((line = reader.readLine()) != null) {
+			outputString.append(line);
+		}
+		System.out.println(outputString);
+		User userDetails = new Gson().fromJson(outputString.toString(), User.class);
+
+		HttpSession session = req.getSession();
+		session.setAttribute("userDetails", userDetails);
+
+		req.getRequestDispatcher("/main").forward(req, resp);
+
 	}
 
 	@Override
@@ -184,9 +242,7 @@ public class LoginServlet extends HttpServlet {
 		outputStream.write(cipherText);
 
 		byte[] finalData = outputStream.toByteArray();
-
 		String encodedFinalData = DatatypeConverter.printBase64Binary(finalData);
-
 		return encodedFinalData;
 	}
 

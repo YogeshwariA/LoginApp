@@ -1,11 +1,14 @@
 package com.full.servlet;
 import java.io.IOException;
+
 //import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import com.full.model.User;
 @SuppressWarnings("serial")
 public class HomeServlet extends HttpServlet {
 	
@@ -25,10 +28,11 @@ public class HomeServlet extends HttpServlet {
 	private void welcomeUser(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		HttpSession session = req.getSession(false);
 		System.out.println();
-		if (session == null || session.getAttribute("username") == null) {
+		if (session == null || session.getAttribute("userDetails") == null) {
 			req.getRequestDispatcher("/home").forward(req, resp);
 		} else {
-			resp.getWriter().println("Welcome!!!   " + session.getAttribute("username"));
+			User user=(User) session.getAttribute("userDetails");
+			resp.getWriter().println("<span> Welcome "+user.getGiven_name()+"</span>"+"<img align='right' style='border-radius:50px' width='50px' height='50px' src='"+user.getPicture()+"'></img>");
 
 			req.getRequestDispatcher("/goToMain").forward(req, resp);
 		}

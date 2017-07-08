@@ -7,7 +7,7 @@ import com.googlecode.objectify.ObjectifyService;
 public class OfyHelper implements ServletContextListener {
 
 	public void contextInitialized(ServletContextEvent event) {
-
+ 
 		ObjectifyService.register(User.class);
 	}
 
