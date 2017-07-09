@@ -105,7 +105,12 @@ public class LoginServlet extends HttpServlet {
 				if (dbPassword.equals(password)) {
 					HttpSession session = req.getSession(true);
 					session.setAttribute("user", user);
-					req.getRequestDispatcher("/main").forward(req, resp);
+
+					String outputString = new Gson().toJson(user);
+					resp.setContentType("applicaion/json");
+
+					resp.getWriter().print(outputString);
+
 				} else {
 					resp.getWriter().println("Username or Password is wrong");
 				}
@@ -136,7 +141,6 @@ public class LoginServlet extends HttpServlet {
 		if ((firstName != null && !firstName.isEmpty()) && (lastName != null && !lastName.isEmpty())
 				&& (emailId != null && !emailId.isEmpty()) && (password != null && !password.isEmpty())) {
 			// Entity user = checkUserDetails(emailId);
-
 			User user = ObjectifyService.ofy().load().type(User.class).id(emailId).now();
 			if (user == null) {
 				user = new User();
@@ -172,9 +176,13 @@ public class LoginServlet extends HttpServlet {
 	private void signUpWithGoogle(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException, ServletException {
 		String code = req.getParameter("code");
+		// String redirectUrl =
+		// "http://v1-dot-login-app-171316.appspot.com/login/oauth2callback";
+
+		String redirectUrl = "http://localhost:8888/login/oauth2callback";
 		String urlParameters = "code=" + code
 				+ "&client_id=657816056670-m7lhu5lemeqpittvac8nlfqlffk3l5ki.apps.googleusercontent.com"
-				+ "&client_secret=q0qS6sVUNyAhh2-TrdUpQwlx" + "&redirect_uri=http://localhost:8888/login/oauth2callback"
+				+ "&client_secret=q0qS6sVUNyAhh2-TrdUpQwlx" + "&redirect_uri=" + redirectUrl
 				+ "&grant_type=authorization_code";
 
 		URL url = new URL("https://accounts.google.com/o/oauth2/token");
@@ -210,8 +218,12 @@ public class LoginServlet extends HttpServlet {
 		System.out.println(outputString);
 		User user = new Gson().fromJson(outputString.toString(), User.class);
 
+		ObjectifyService.ofy().save().entity(user).now();
+
 		HttpSession session = req.getSession();
 		session.setAttribute("user", user);
+
+		
 
 		req.getRequestDispatcher("/main").forward(req, resp);
 

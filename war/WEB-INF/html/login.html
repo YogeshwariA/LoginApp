@@ -1,47 +1,116 @@
 <html>
 <head>
 
+<style type="text/css">
+.btn:hover {
+	cursor: pointer;
+}
+</style>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<title>Hello App Engine</title>
+<title>Login</title>
+<link type="text/css" rel="stylesheet" href="css/bootstrap.css">
+
 <script type="text/javascript" src="js/login.js"></script>
 </head>
 
-<body style="margin-left: 500px; height: 260px; width: 260px;">
-	<div>
-		<form action="/gotosignup" method="get">
+<body>
+
+
+	<div class="card" id="loginDiv"
+		style="top: 50px; margin-left: 500px; height: 325px; width: 300px;">
+		<div class="card-header"
+			style="color: white; background-color: cadetblue">Login</div>
+		<div class="card-block">
+			<div class="input-group">
+				<span class="input-group-addon" id="email-label">Email</span> <input
+					type="text" class="form-control" name="emailId" id="emailId">
+			</div>
+			<br>
+			<div class="input-group">
+				<span class="input-group-addon" id="password-label">Password</span>
+				<input type="password" class="form-control" name="password"
+					id="password">
+			</div>
+			<br>
 			<table>
 				<tr>
-					<td><input type="submit" value="SignUp"></td>
+					<td style="width: 40%"><input class="btn btn-primary"
+						type="button" value="Login" onclick="submitLogin()"></td>
+					<td><input class="btn btn-danger" type="button"
+						value="Google Siginin" onclick="goToGoogle()"></td>
+				</tr>
+				<tr>
+					<td colspan="2" align="center"><br>
+						<form action="/gotosignup">
+							<input type="submit" class="btn btn-success" value="SignUp">
+						</form></td>
+				</tr>
+			</table>
+
+		</div>
+	</div>
+	<br>
+	<br>
+	<br>
+	<div class="alert alert-danger" id="emailIdErrorMessage"
+		style="margin-left: 500px; width: 300px; display: none">
+		<strong>Oops!!!</strong> Email Id is Empty
+	</div>
+
+	<div class="alert alert-danger" id="passwordErrorMessage"
+		style="margin-left: 500px; width: 300px; display: none">
+		<strong>Oops!!!</strong> Password is Empty
+	</div>
+
+
+	<div id="welcomeDiv" class="card" style="display:none;top:50px;margin-left: 500px; height: 200px; width: 300px;">
+		<div class="card-header" style="color: white; background-color: darkcyan;">Welcome !!!</div>
+		<div class="card-block">
+			<span id="usernameSpan"> </span><img align='right' id="profilePic"
+				style='border-radius:50px' width='50px' height='50px' ></img>
+
+			<a align="right" class="link" style="text-align:right" href=/logoutconfirm>Logout</a>
+		</div>
+	</div>
+
+	<div id="messageDiv"></div>
+	<!-- <div>
+		<form class="form-inline" action="/gotosignup" method="get">
+			<table>
+				<tr>
+					<td><input type="submit" class="btn btn-success"
+						value="SignUp"></td>
 				</tr>
 			</table>
 		</form>
+		<form class="form-inline">
+			<table>
+				<tr>
+					<td><label>EmailId: </label></td>
+					<td><input type="text" class="form-control" name="emailId"
+						id="emailId"><span id="emailIdErrorMessage"
+						style="color: red; display: none">Email is Empty</span></td>
+				</tr>
+				<tr>
+					<td><label>Password: </label></td>
+					<td><input type="password" class="form-control"
+						name="password" id="password"><span
+						id="passwordErrorMessage" style="color: red; display: none">Password
+							is Empty</span></td>
+				</tr>
 
-		<table>
-			<tr>
-				<td><label>EmailId: </label></td>
-				<td><input type="text" name="emailId" id="emailId"><span
-					id="emailIdErrorMessage" style="color: red; display: none">Email
-						is Empty</span></td>
-			</tr>
-			<tr>
-				<td><label>Password: </label></td>
-				<td><input type="password" name="password" id="password"><span
-					id="passwordErrorMessage" style="color: red; display: none">Password
-						is Empty</span></td>
-			</tr>
-
-			<tr>
-				<td><input type="button" value="Login"
-					onclick=" validationLogin()">
-					<input type="button" value="Signin With Google"
-					onclick="goToGoogle()">
-					</td>
-			</tr>
-		</table>
+				<tr>
+					<td><input class="btn btn-primary" type="button" value="Login"
+						onclick=" validationLogin()"></td>
+					<td><input class="btn btn-info" type="button"
+						value="Signin With Google" onclick="goToGoogle()"></td>
+				</tr>
+			</table>
+		</form>
 	</div>
-	
+
 	<div>
 		<br> <span style="color: green" id="messageDiv"></span><br>
-	</div>
+	</div> -->
 </body>
 </html>
