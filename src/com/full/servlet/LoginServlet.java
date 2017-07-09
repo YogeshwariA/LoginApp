@@ -61,8 +61,11 @@ public class LoginServlet extends HttpServlet {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+			} else if (req.getRequestURI().contains("/gotosignup")) {
+				req.getRequestDispatcher("/WEB-INF/html/signup.html").forward(req, resp);
 			}
 		}
+
 	}
 
 	@Override
@@ -101,7 +104,7 @@ public class LoginServlet extends HttpServlet {
 				dbPassword = decrypt(dbPassword, "E1BB465D57CAE7ACDBBE8091F9CE83DF");
 				if (dbPassword.equals(password)) {
 					HttpSession session = req.getSession(true);
-					session.setAttribute("username", user.getGiven_name());
+					session.setAttribute("user", user);
 					req.getRequestDispatcher("/main").forward(req, resp);
 				} else {
 					resp.getWriter().println("Username or Password is wrong");
@@ -136,13 +139,13 @@ public class LoginServlet extends HttpServlet {
 
 			User user = ObjectifyService.ofy().load().type(User.class).id(emailId).now();
 			if (user == null) {
-				User details = new User();
-				details.setGiven_name(firstName);
-				details.setDateofBirth(new SimpleDateFormat("yyyy-dd-mm").parse(dateOfBirth).getTime());
-				details.setEmail(emailId);
-				details.setFamily_name(lastName);
-				details.setPassword(encrypt(password, "E1BB465D57CAE7ACDBBE8091F9CE83DF"));
-				details.setGender(gender);
+				user = new User();
+				user.setGiven_name(firstName);
+				user.setDateofBirth(new SimpleDateFormat("yyyy-dd-mm").parse(dateOfBirth).getTime());
+				user.setEmail(emailId);
+				user.setFamily_name(lastName);
+				user.setPassword(encrypt(password, "E1BB465D57CAE7ACDBBE8091F9CE83DF"));
+				user.setGender(gender);
 				/*
 				 * Entity entity = new Entity("Users", emailId);
 				 * entity.setProperty("FirstName", firstName);
@@ -153,9 +156,9 @@ public class LoginServlet extends HttpServlet {
 				 * entity.setProperty("DateOfBirth", dateOfBirth);
 				 * datastore.put(entity);
 				 */
-				ObjectifyService.ofy().save().entity(details).now();
+				ObjectifyService.ofy().save().entity(user).now();
 				HttpSession session = req.getSession();
-				session.setAttribute("username", firstName + " " + lastName);
+				session.setAttribute("user", user);
 				resp.getWriter().println("Successfully signed up.");
 				resp.sendRedirect("/main");
 			} else {
@@ -205,10 +208,10 @@ public class LoginServlet extends HttpServlet {
 			outputString.append(line);
 		}
 		System.out.println(outputString);
-		User userDetails = new Gson().fromJson(outputString.toString(), User.class);
+		User user = new Gson().fromJson(outputString.toString(), User.class);
 
 		HttpSession session = req.getSession();
-		session.setAttribute("userDetails", userDetails);
+		session.setAttribute("user", user);
 
 		req.getRequestDispatcher("/main").forward(req, resp);
 

@@ -12,7 +12,6 @@ import com.full.model.User;
 @SuppressWarnings("serial")
 public class HomeServlet extends HttpServlet {
 	
-	
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 			doGet(req, resp);
@@ -28,13 +27,12 @@ public class HomeServlet extends HttpServlet {
 	private void welcomeUser(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		HttpSession session = req.getSession(false);
 		System.out.println();
-		if (session == null || session.getAttribute("userDetails") == null) {
+		if (session == null || session.getAttribute("user") == null) {
 			req.getRequestDispatcher("/home").forward(req, resp);
 		} else {
-			User user=(User) session.getAttribute("userDetails");
+			User user=(User) session.getAttribute("user");
 			resp.getWriter().println("<span> Welcome "+user.getGiven_name()+"</span>"+"<img align='right' style='border-radius:50px' width='50px' height='50px' src='"+user.getPicture()+"'></img>");
-
-			req.getRequestDispatcher("/goToMain").forward(req, resp);
+			req.getRequestDispatcher("/WEB-INF/html/main.html").forward(req, resp);
 		}
 	}
 	private void goToLoginHtml(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

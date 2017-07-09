@@ -30,6 +30,11 @@ function isValidLogin() {
 
 }
 
+function goToGoogle() {
+	window.location.href = 'https://accounts.google.com/o/oauth2/auth?scope=email&&response_type=code&client_id=657816056670-m7lhu5lemeqpittvac8nlfqlffk3l5ki.apps.googleusercontent.com&approval_prompt=force&redirect_uri=http://localhost:8888/login/oauth2callback';
+
+}
+
 function submitLogin() {
 	if (isValidLogin()) {
 		var form = document.forms[0];
@@ -45,29 +50,27 @@ function validationLogin() {
 
 		}
 
-		if (this.readyState == 1) {
-
-			message = "Open method is called.";
-			document.getElementById("messageDiv").innerHTML += '<strong style="color:yellow">'
-					+ message + '</strong>';
-		}
-		if (this.readyState == 2) {
-			message = "Server receive the request.";
-			document.getElementById("messageDiv").innerHTML += '<strong style="color:skyblue">'
-					+ message + '</strong>';
-		}
-		xhttp.onprogress = function() {
-			message = "3.Request is in process.";
-			document.getElementById("messageDiv").innerHTML += '<strong style="color:blue">'
-					+ message + '</strong>';
-		}
+		/*
+		 * if (this.readyState == 1) {
+		 * 
+		 * message = "Open method is called.";
+		 * document.getElementById("messageDiv").innerHTML += '<strong
+		 * style="color:yellow">' + message + '</strong>'; } if
+		 * (this.readyState == 2) { message = "Server receive the request.";
+		 * document.getElementById("messageDiv").innerHTML += '<strong
+		 * style="color:skyblue">' + message + '</strong>'; } xhttp.onprogress =
+		 * function() { message = "3.Request is in process.";
+		 * document.getElementById("messageDiv").innerHTML += '<strong
+		 * style="color:blue">' + message + '</strong>'; }
+		 */
 		xhttp.onload = function() {
-			message = "4.response is ready.";
+			/*
+			 * message = "4.response is ready.";
+			 *  // document.getElementById("div").style.visibility = "hidden";
+			 * document.getElementById("messageDiv").innerHTML += '<strong
+			 * style="color:green">' + message + '</strong>'+'<br>';
+			 */
 
-			// document.getElementById("div").style.visibility = "hidden";
-			document.getElementById("messageDiv").innerHTML += '<strong style="color:green">'
-					+ message + '</strong>'+'<br>';
-			
 			document.getElementById("messageDiv").innerHTML += '<strong >'
 					+ xhttp.responseText + '</strong>';
 		};
