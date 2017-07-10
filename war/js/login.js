@@ -1,7 +1,7 @@
 function isValidLogin() {
 	var emailId = document.getElementById("emailId").value;
 	var password = document.getElementById("password").value;
-
+	document.getElementById("serverErrorMessage").style.display = "none";
 	// Checks whether email id is not null,not empty and not undefined
 	if (!emailId) {
 		// shows error message span
@@ -27,14 +27,14 @@ function isValidLogin() {
 	} else {
 		return false;
 	}
-
 }
 
 function goToGoogle() {
-	//var redirectUrl = 'http://v1-dot-login-app-171316.appspot.com/login/oauth2callback';
+	// var redirectUrl =
+	// 'http://v1-dot-login-app-171316.appspot.com/login/oauth2callback';
 	var clientId = '657816056670-m7lhu5lemeqpittvac8nlfqlffk3l5ki.apps.googleusercontent.com';
 
-	 var redirectUrl="http://localhost:8888/login/oauth2callback";
+	var redirectUrl = "http://localhost:8888/login/oauth2callback";
 
 	window.location.href = 'https://accounts.google.com/o/oauth2/auth?scope=email&&response_type=code&client_id='
 			+ clientId + '&approval_prompt=force&redirect_uri=' + redirectUrl;
@@ -78,11 +78,16 @@ function validationLogin() {
 
 			var userDetail = JSON.parse(xhttp.responseText);
 			if (userDetail) {
-				document.getElementById('loginDiv').style.display = "none";
-				document.getElementById('welcomeDiv').style.display = "block";
+				if (!userDetail.message) {
+					document.getElementById('loginDiv').style.display = "none";
+					document.getElementById('welcomeDiv').style.display = "block";
 
-				document.getElementById("usernameSpan").innerHTML = userDetail.given_name;
-				document.getElementById("profilePic").src = userDetail.picture;
+					document.getElementById("usernameSpan").innerHTML = userDetail.given_name;
+					document.getElementById("profilePic").src = userDetail.picture;
+				} else {
+					document.getElementById("serverErrorMessage").style.display = "block";
+					document.getElementById("serverErrorMessage").innerHTML = userDetail.message;
+				}
 
 			}
 
@@ -93,7 +98,7 @@ function validationLogin() {
 		};
 	}
 	xhttp.open("POST", "/login", true);
-	xhttp.timeout = 1000;
+	xhttp.timeout = 50000;
 
 	xhttp.ontimeout = function() {
 		console.log("Time out!!!");

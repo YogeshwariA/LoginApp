@@ -2,13 +2,112 @@
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<link type="text/css" rel="stylesheet" href="css/bootstrap.css">
+
 <title>SignUp</title>
 <script type="text/javascript" src="js/signup.js"></script>
 </head>
+<body>
+	<div class="card" id="loginDiv"
+		style="top: 50px; margin-left: 500px; height: 500px; width: 500px;">
+		<div class="card-header"
+			style="color: white; background-color: cadetblue">Login</div>
+		<div class="card-block">
+			<div class="input-group">
+				<span class="input-group-addon" id="email-label">FirstName</span> <input
+					type="text" class="form-control" name="firstName" id="firstName">
+			</div>
+			<br>
+			<div class="input-group">
+				<span class="input-group-addon" id="email-label">LastName</span> <input
+					type="text" class="form-control" name="lastName" id="lastName">
+			</div>
+			<br>
+			<div class="input-group">
+				<label class="control-label" for="email"> </label> <span
+					class="input-group-addon" id="email-label">Email</span> <input
+					type="text" class="form-control" class="form-control"
+					name="emailId" id="emailId">
+			</div>
+			<br>
+			<div class="input-group">
+				<span class="input-group-addon" id="password-label">Password</span>
+				<input type="password" class="form-control" name="password"
+					id="password">
+			</div>
+			<br>
 
-<body style="margin-left: 500px; height: 260px; width: 500px;">
+			<div class="btn-group" data-toggle="buttons">
+				<label class="radio-inline"> <input type="radio"
+					name="optradio">Male
+				</label> <label class="radio-inline"> <input type="radio"
+					name="optradio">Female
+				</label>
+			</div>
 
-	<form name="signupFrom" id="signupFrom" action="/signup" method="post">
+			<br>
+			<div class="input-group">
+				<span class="input-group-addon" id="password-label">DateOfBirth</span>
+				<input type="text" class="form-control" class="form-control"
+					name="birthday" id="birthday">
+			</div>
+			<br>
+			<table>
+				<tr>
+					<td><input type="submit" class="btn btn-success" onclick="sumbitSignup()"
+						value="Submit"></td>
+				</tr>
+
+			</table>
+
+		</div>
+	</div>
+	<br>
+	<br>
+	<br>
+	<div class="alert alert-danger" id="emailIdErrorMessage"
+		style="margin-left: 550px; width: 700px; display: none">
+		<strong>Oops!!!</strong> Email Id is Empty
+	</div>
+
+	<div class="alert alert-danger" id="passwordErrorMessage"
+		style="margin-left: 500px; width: 300px; display: none">
+		<strong>Oops!!!</strong> Password is Empty
+	</div>
+
+	<div class="alert alert-danger" id="serverErrorMessage"
+		style="margin-left: 500px; width: 300px; display: none">
+		<strong>Oops!!!</strong>
+	</div>
+
+
+	<div id="welcomeDiv" class="card"
+		style="display: none; top: 50px; margin-left: 500px; height: 200px; width: 300px;">
+		<div class="card-header"
+			style="color: white; background-color: darkcyan;">Welcome !!!</div>
+		<div class="card-block">
+			<span id="usernameSpan"> </span><img align='right' id="profilePic"
+				style='border-radius: 50px' width='50px' height='50px'></img> <a
+				align="right" class="link" style="text-align: right"
+				href=/logoutconfirm>Logout</a>
+		</div>
+	</div>
+	<div id="messageDiv"></div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<!-- <form name="signupFrom" id="signupFrom" action="/signup" method="post">
 		<table>
 
 			<tr>
@@ -56,6 +155,6 @@
 
 		</table>
 	</form>
-	
+ -->
 </body>
 </html>

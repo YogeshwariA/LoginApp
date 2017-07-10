@@ -14,6 +14,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Scanner;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -98,7 +99,8 @@ public class LoginServlet extends HttpServlet {
 		if ((emailId != null && !emailId.isEmpty()) && (password != null && !password.isEmpty())) {
 			User user = ObjectifyService.ofy().load().type(User.class).id(emailId).now();
 			if (user == null) {
-				resp.getWriter().println("Your not sigup.Please signup. ");
+				resp.setContentType("application/json");
+				resp.getWriter().println("{\"message\":\"Your not sigup.Please signup. \"}");
 			} else {
 				String dbPassword = user.getPassword();
 				dbPassword = decrypt(dbPassword, "E1BB465D57CAE7ACDBBE8091F9CE83DF");
@@ -107,17 +109,21 @@ public class LoginServlet extends HttpServlet {
 					session.setAttribute("user", user);
 
 					String outputString = new Gson().toJson(user);
-					resp.setContentType("applicaion/json");
+					resp.setContentType("application/json");
 
 					resp.getWriter().print(outputString);
 
 				} else {
-					resp.getWriter().println("Username or Password is wrong");
+					resp.setContentType("application/json");
+
+					resp.getWriter().println("{\"message\":\"Username or Password is wrong\"}");
 				}
 			}
 
 		} else {
-			resp.getWriter().println("Please give correct credentials");
+
+			resp.setContentType("application/json");
+			resp.getWriter().println("{\"message\":\"Please give correct credentials\"}");
 		}
 
 	}
@@ -182,8 +188,8 @@ public class LoginServlet extends HttpServlet {
 		String redirectUrl = "http://localhost:8888/login/oauth2callback";
 		String urlParameters = "code=" + code
 				+ "&client_id=657816056670-m7lhu5lemeqpittvac8nlfqlffk3l5ki.apps.googleusercontent.com"
-				+ "&client_secret=q0qS6sVUNyAhh2-TrdUpQwlx" + "&redirect_uri=" + redirectUrl
-				+ "&grant_type=authorization_code";
+				+ "&scope=https://www.googleapis.com/auth/userinfo.profile" + "&client_secret=q0qS6sVUNyAhh2-TrdUpQwlx"
+				+ "&redirect_uri=" + redirectUrl + "&grant_type=authorization_code";
 
 		URL url = new URL("https://accounts.google.com/o/oauth2/token");
 		URLConnection urlConn = url.openConnection();
@@ -209,21 +215,21 @@ public class LoginServlet extends HttpServlet {
 
 		url = new URL("https://www.googleapis.com/oauth2/v1/userinfo?access_token=" + access_token);
 		urlConn = url.openConnection();
-		StringBuilder outputString = new StringBuilder();
-		String line = "";
-		BufferedReader reader = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
-		while ((line = reader.readLine()) != null) {
-			outputString.append(line);
+
+		Scanner scanner = new Scanner(new InputStreamReader(urlConn.getInputStream()));
+		String outputJson = "";
+		while (scanner.hasNext()) {
+			outputJson += scanner.nextLine();
 		}
-		System.out.println(outputString);
-		User user = new Gson().fromJson(outputString.toString(), User.class);
+
+		System.out.println(outputJson);
+		scanner.close();
+		User user = new Gson().fromJson(outputJson, User.class);
 
 		ObjectifyService.ofy().save().entity(user).now();
 
 		HttpSession session = req.getSession();
 		session.setAttribute("user", user);
-
-		
 
 		req.getRequestDispatcher("/main").forward(req, resp);
 
