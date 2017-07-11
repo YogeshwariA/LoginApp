@@ -15,7 +15,6 @@ function isValidLogin() {
 	if (!password) {
 		// shows error message span
 		document.getElementById("passwordErrorMessage").style.display = "block";
-
 	} else {
 		// hides error message span
 		document.getElementById("passwordErrorMessage").style.display = "none";
@@ -35,12 +34,10 @@ function goToGoogle() {
 	var clientId = '657816056670-m7lhu5lemeqpittvac8nlfqlffk3l5ki.apps.googleusercontent.com';
 
 	var redirectUrl = "http://localhost:8888/login/oauth2callback";
-
-	window.location.href = 'https://accounts.google.com/o/oauth2/auth?scope=email&&response_type=code&client_id='
-			+ clientId + '&approval_prompt=force&redirect_uri=' + redirectUrl;
-
+	// https://access.anywhereworks.com/o/oauth2/auth?
+	window.location.href = 'https://accounts.google.com/o/oauth2/v2/auth?scope=https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile&access_type=offline&response_type=code&client_id='
+			+ clientId + '&redirect_uri=' + redirectUrl;
 }
-
 function submitLogin() {
 	if (isValidLogin()) {
 		validationLogin();
@@ -50,11 +47,6 @@ function validationLogin() {
 	var xhttp = new XMLHttpRequest();
 	var message = "";
 	xhttp.onreadystatechange = function() {
-		message += "";
-		if (this.readyState == 0) {
-
-		}
-
 		/*
 		 * if (this.readyState == 1) {
 		 * 
@@ -69,13 +61,6 @@ function validationLogin() {
 		 * style="color:blue">' + message + '</strong>'; }
 		 */
 		xhttp.onload = function() {
-			/*
-			 * message = "4.response is ready."; //
-			 * document.getElementById("div").style.visibility = "hidden";
-			 * document.getElementById("messageDiv").innerHTML += '<strong
-			 * style="color:green">' + message + '</strong>'+'<br>';
-			 */
-
 			var userDetail = JSON.parse(xhttp.responseText);
 			if (userDetail) {
 				if (!userDetail.message) {

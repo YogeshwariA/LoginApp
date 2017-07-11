@@ -7,9 +7,7 @@ import com.googlecode.objectify.annotation.Id;
 
 @Entity
 public class User implements Serializable {
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
 	private String given_name;
 	private String family_name;

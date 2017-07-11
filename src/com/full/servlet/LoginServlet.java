@@ -84,13 +84,11 @@ public class LoginServlet extends HttpServlet {
 					e.printStackTrace();
 				}
 			}
-
 		} catch (InvalidKeyException | IllegalBlockSizeException | BadPaddingException | NoSuchAlgorithmException
 				| NoSuchPaddingException | InvalidAlgorithmParameterException e) {
 			e.printStackTrace();
 		}
 	}
-
 	private void loginUser(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
 			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
@@ -142,7 +140,7 @@ public class LoginServlet extends HttpServlet {
 		String emailId = req.getParameter("emailId");
 		String password = req.getParameter("password");
 		String gender = req.getParameter("gender");
-		String dateOfBirth = req.getParameter("birthDay");
+		String dateOfBirth = req.getParameter("birthday");
 
 		if ((firstName != null && !firstName.isEmpty()) && (lastName != null && !lastName.isEmpty())
 				&& (emailId != null && !emailId.isEmpty()) && (password != null && !password.isEmpty())) {
@@ -156,26 +154,23 @@ public class LoginServlet extends HttpServlet {
 				user.setFamily_name(lastName);
 				user.setPassword(encrypt(password, "E1BB465D57CAE7ACDBBE8091F9CE83DF"));
 				user.setGender(gender);
-				/*
-				 * Entity entity = new Entity("Users", emailId);
-				 * entity.setProperty("FirstName", firstName);
-				 * entity.setProperty("LastName", lastName);
-				 * entity.setProperty("EmailId", emailId);
-				 * entity.setProperty("Password", password);
-				 * entity.setProperty("Gender", gender);
-				 * entity.setProperty("DateOfBirth", dateOfBirth);
-				 * datastore.put(entity);
-				 */
 				ObjectifyService.ofy().save().entity(user).now();
 				HttpSession session = req.getSession();
 				session.setAttribute("user", user);
-				resp.getWriter().println("Successfully signed up.");
+
+				String outputString = new Gson().toJson(user);
+				resp.setContentType("application/json");
+
+				resp.getWriter().print(outputString);
+
 				resp.sendRedirect("/main");
 			} else {
-				resp.getWriter().println("EmailId already exists");
+				resp.setContentType("application/json");
+				resp.getWriter().println("{\"message\":\"EmailId already exists \"}");
 			}
 		} else {
-			resp.getWriter().println("Please give correct credentials");
+			resp.setContentType("application/json");
+			resp.getWriter().println("{\"message\":\"Please give correct credentials\"}");
 		}
 	}
 
@@ -188,8 +183,9 @@ public class LoginServlet extends HttpServlet {
 		String redirectUrl = "http://localhost:8888/login/oauth2callback";
 		String urlParameters = "code=" + code
 				+ "&client_id=657816056670-m7lhu5lemeqpittvac8nlfqlffk3l5ki.apps.googleusercontent.com"
-				+ "&scope=https://www.googleapis.com/auth/userinfo.profile" + "&client_secret=q0qS6sVUNyAhh2-TrdUpQwlx"
-				+ "&redirect_uri=" + redirectUrl + "&grant_type=authorization_code";
+				+ "&scope=https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"
+				+ "&client_secret=q0qS6sVUNyAhh2-TrdUpQwlx" + "&redirect_uri=" + redirectUrl
+				+ "&grant_type=authorization_code";
 
 		URL url = new URL("https://accounts.google.com/o/oauth2/token");
 		URLConnection urlConn = url.openConnection();
