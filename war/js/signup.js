@@ -82,7 +82,6 @@ function validationSignUp() {
 				document.getElementById('welcomeMainDiv').innerHTML=xhttp.responseText;
 				
 			}
-			
 		};
 	}
 	xhttp.open("POST", "/signup", true);

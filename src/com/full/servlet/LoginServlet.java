@@ -55,8 +55,17 @@ public class LoginServlet extends HttpServlet {
 		String method = req.getMethod();
 		if ("post".equalsIgnoreCase(method)) {
 			doPost(req, resp);
-		} else if ("get".equalsIgnoreCase(method)) {
-			if ((req.getRequestURI().contains("oauth2callback"))) {
+		} /*
+			 * else if ("get".equalsIgnoreCase(method)) { if
+			 * ((req.getRequestURI().contains("oauth2callback"))) { try {
+			 * signUpWithGoogle(req, resp); } catch (Exception e) {
+			 * e.printStackTrace(); } } else if
+			 * (req.getRequestURI().contains("/gotosignup")) {
+			 * req.getRequestDispatcher("/WEB-INF/html/signup.html").forward(
+			 * req, resp); }
+			 */
+		else if ("get".equalsIgnoreCase(method)) {
+			if ((req.getRequestURI().contains("staging"))) {
 				try {
 					signUpWithGoogle(req, resp);
 				} catch (Exception e) {
@@ -89,6 +98,7 @@ public class LoginServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 	}
+
 	private void loginUser(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException,
 			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException {
@@ -179,15 +189,20 @@ public class LoginServlet extends HttpServlet {
 		String code = req.getParameter("code");
 		// String redirectUrl =
 		// "http://v1-dot-login-app-171316.appspot.com/login/oauth2callback";
+		// https://access.anywhereworks.com/o/oauth2/auth? response_type=code
+		// &client_id=cc21f-a90d4715f1esdfd91215314065497a6e
+		// &scope=awapis.users.read awapis.feeds.write
+		// &redirect_uri=http://localhost:8000/oauth/callback
+		// &approval_prompt=force &state=state-token-79sdfs9d7fg907fsud987f
+		// String redirectUrl =
+		// "https://access.anywhereworks.com/o/oauth2/auth";
 
 		String redirectUrl = "http://localhost:8888/login/oauth2callback";
-		String urlParameters = "code=" + code
-				+ "&client_id=657816056670-m7lhu5lemeqpittvac8nlfqlffk3l5ki.apps.googleusercontent.com"
-				+ "&scope=https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile"
-				+ "&client_secret=q0qS6sVUNyAhh2-TrdUpQwlx" + "&redirect_uri=" + redirectUrl
+		String urlParameters = "code=" + code + "&client_id=2a9ac-2baf139b82055cc1e9d6974edf536f2c" + "&awapis.identity"
+				+ "&client_secret=T7_Buj9BRe2odJuV-iASsgowJ4xFFmxDS1-7DaC2" + "&redirect_uri=" + redirectUrl
 				+ "&grant_type=authorization_code";
-
-		URL url = new URL("https://accounts.google.com/o/oauth2/token");
+		URL url = new URL("https://access-dot-staging.anywhereworks.com/");
+		// URL url = new URL("https://accounts.google.com/o/oauth2/token");
 		URLConnection urlConn = url.openConnection();
 
 		urlConn.setDoOutput(true);
@@ -234,7 +249,6 @@ public class LoginServlet extends HttpServlet {
 	@Override
 	public void destroy() {
 		System.out.println("Completed");
-
 	}
 
 	private static final String ALGORITHOM = "AES/CBC/PKCS5Padding";
@@ -284,5 +298,4 @@ public class LoginServlet extends HttpServlet {
 		String plainText = new String(plainTextBytes);
 		return plainText;
 	}
-
 }
