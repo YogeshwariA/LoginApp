@@ -1,20 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
-	<!-- <servlet> <servlet-name>DefaultServlet</servlet-name> <jsp-file>/WEB-INF/html/login.html</jsp-file> 
-		</servlet> <servlet-mapping> <servlet-name>DefaultServlet</servlet-name> 
-		<url-pattern>/</url-pattern> </servlet-mapping> <servlet> <servlet-name>GotoSignupServlet</servlet-name> 
-		<jsp-file>/WEB-INF/html/signup.html</jsp-file> </servlet> <servlet-mapping> 
-		<servlet-name>GotoSignupServlet</servlet-name> <url-pattern>/gotosignup</url-pattern> 
-		</servlet-mapping> <servlet> <servlet-name>GotoLogoutServlet</servlet-name> 
-		<jsp-file>/WEB-INF/html/logout.html</jsp-file> </servlet> <servlet-mapping> 
-		<servlet-name>GotoLogoutServlet</servlet-name> <url-pattern>/goToLogout</url-pattern> 
-		</servlet-mapping> <servlet> <servlet-name>GotoMainServlet</servlet-name> 
-		<jsp-file>/WEB-INF/html/main.html</jsp-file> </servlet> <servlet-mapping> 
-		<servlet-name>GotoMainServlet</servlet-name> <url-pattern>/goToMain</url-pattern> 
-		</servlet-mapping> <servlet> <servlet-name>GotoLogoutConfirmationServlet</servlet-name> 
-		<jsp-file>/WEB-INF/html/logout_confirmation.html</jsp-file> </servlet> <servlet-mapping> 
-		<servlet-name>GotoLogoutConfirmationServlet</servlet-name> <url-pattern>/goToLogoutconfirm</url-pattern> 
-		</servlet-mapping> -->
 	<servlet>
 		<servlet-name>HomeServlet</servlet-name>
 		<servlet-class>com.full.servlet.HomeServlet</servlet-class>

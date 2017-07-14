@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import com.full.model.User;
-
 @SuppressWarnings("serial")
 public class HomeServlet extends HttpServlet {
 	@Override

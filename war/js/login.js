@@ -27,18 +27,23 @@ function isValidLogin() {
 		return false;
 	}
 }
+function goToAnywhereWorksSignIn() {
+	var clientId = '2a9ac-2baf139b82055cc1e9d6974edf536f2c';
+	var redirectUrl = "http://localhost:8888/login/oauth2callback";
+	window.location.href = 'https://staging-fullcreative-dot-full-auth.appspot.com/o/oauth2/auth?response_type=code&client_id='
+			+ clientId
+			+ '&access_type=offline'
+			+ '&scope=awapis.identity&redirect_uri=' + redirectUrl;
+}
 function goToGoogle() {
 	// var redirectUrl =
 	// 'http://v1-dot-login-app-171316.appspot.com/login/oauth2callback';
-	var clientId = '2a9ac-2baf139b82055cc1e9d6974edf536f2c';
+	var clientId = '657816056670-m7lhu5lemeqpittvac8nlfqlffk3l5ki.apps.googleusercontent.com';
+
 	var redirectUrl = "http://localhost:8888/login/oauth2callback";
-	// https://accounts.google.com/o/oauth2/v2/auth
-	// https://access.anywhereworks.com/o/oauth2/auth?
-	// https://staging-fullcreative-dot-full-auth.appspot.com
-	// var redirectUrl = " https://access.anywhereworks.com/o/oauth2/auth";
-	window.location.href = 'https://access-dot-staging.anywhereworks.com/?response_type=code &client_id='
+	window.location.href = 'https://accounts.google.com/o/oauth2/auth?response_type=code&access_type=offline&client_id='
 			+ clientId
-			+ '&scope=awapis.users.read awapis.feeds.write &redirect_uri='
+			+ '&scope=https://www.googleapis.com/auth/user.birthday.read https://www.googleapis.com/auth/userinfo.email&redirect_uri='
 			+ redirectUrl;
 }
 function submitLogin() {

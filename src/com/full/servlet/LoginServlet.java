@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.security.InvalidAlgorithmParameterException;
@@ -55,19 +56,12 @@ public class LoginServlet extends HttpServlet {
 		String method = req.getMethod();
 		if ("post".equalsIgnoreCase(method)) {
 			doPost(req, resp);
-		} /*
-			 * else if ("get".equalsIgnoreCase(method)) { if
-			 * ((req.getRequestURI().contains("oauth2callback"))) { try {
-			 * signUpWithGoogle(req, resp); } catch (Exception e) {
-			 * e.printStackTrace(); } } else if
-			 * (req.getRequestURI().contains("/gotosignup")) {
-			 * req.getRequestDispatcher("/WEB-INF/html/signup.html").forward(
-			 * req, resp); }
-			 */
-		else if ("get".equalsIgnoreCase(method)) {
-			if ((req.getRequestURI().contains("staging"))) {
+		} else if ("get".equalsIgnoreCase(method)) {
+			System.out.println("In Service");
+			if ((req.getRequestURI().contains("oauth2callback"))) {
 				try {
-					signUpWithGoogle(req, resp);
+					// signInWithGoogle(req, resp);
+					signInwithAnywhereWorks(req, resp);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -76,6 +70,15 @@ public class LoginServlet extends HttpServlet {
 			}
 		}
 
+		/*
+		 * else if ("get".equalsIgnoreCase(method)) { if
+		 * ((req.getRequestURI().contains("staging"))) { try {
+		 * signUpWithGoogle(req, resp); } catch (Exception e) {
+		 * e.printStackTrace(); } } else if
+		 * (req.getRequestURI().contains("/gotosignup")) {
+		 * req.getRequestDispatcher("/WEB-INF/html/signup.html").forward(req,
+		 * resp); } }
+		 */
 	}
 
 	@Override
@@ -184,27 +187,17 @@ public class LoginServlet extends HttpServlet {
 		}
 	}
 
-	private void signUpWithGoogle(HttpServletRequest req, HttpServletResponse resp)
+	private void signInwithAnywhereWorks(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException, ServletException {
-		String code = req.getParameter("code");
-		// String redirectUrl =
-		// "http://v1-dot-login-app-171316.appspot.com/login/oauth2callback";
-		// https://access.anywhereworks.com/o/oauth2/auth? response_type=code
-		// &client_id=cc21f-a90d4715f1esdfd91215314065497a6e
-		// &scope=awapis.users.read awapis.feeds.write
-		// &redirect_uri=http://localhost:8000/oauth/callback
-		// &approval_prompt=force &state=state-token-79sdfs9d7fg907fsud987f
-		// String redirectUrl =
-		// "https://access.anywhereworks.com/o/oauth2/auth";
-
 		String redirectUrl = "http://localhost:8888/login/oauth2callback";
-		String urlParameters = "code=" + code + "&client_id=2a9ac-2baf139b82055cc1e9d6974edf536f2c" + "&awapis.identity"
-				+ "&client_secret=T7_Buj9BRe2odJuV-iASsgowJ4xFFmxDS1-7DaC2" + "&redirect_uri=" + redirectUrl
-				+ "&grant_type=authorization_code";
-		URL url = new URL("https://access-dot-staging.anywhereworks.com/");
-		// URL url = new URL("https://accounts.google.com/o/oauth2/token");
-		URLConnection urlConn = url.openConnection();
-
+		String code = req.getParameter("code");
+		String urlParameters = "code=" + code + "&client_id=2a9ac-2baf139b82055cc1e9d6974edf536f2c"
+				+ "&scope=awapis.identity" + "&client_secret=T7_Buj9BRe2odJuV-iASsgowJ4xFFmxDS1-7DaC2"
+				+ "&access_type=offline" + "&redirect_uri=" + redirectUrl + "&grant_type=authorization_code";
+		URL url = new URL("https://staging-fullcreative-dot-full-auth.appspot.com/o/oauth2/v1/token");
+		// URL url = new
+		// URL("https://access.anywhereworks.com/o/oauth2/v1/token");
+		HttpURLConnection urlConn = (HttpURLConnection) url.openConnection();
 		urlConn.setDoOutput(true);
 		OutputStreamWriter writer = new OutputStreamWriter(urlConn.getOutputStream());
 		writer.write(urlParameters);
@@ -223,7 +216,63 @@ public class LoginServlet extends HttpServlet {
 
 		JsonObject json = (JsonObject) new JsonParser().parse(result.toString());
 		String access_token = json.get("access_token").getAsString();
+		// https://api.anywhereworks.com/api/v1/user/me
 
+		url = new URL("https://api-dot-staging-fullspectrum.appspot.com//api/v1/user/me");
+		urlConn = (HttpURLConnection) url.openConnection();
+		urlConn.setRequestProperty("Content-Type", "application/json");
+		urlConn.setRequestProperty("Authorization", "Bearer "  + access_token);
+		urlConn.setRequestMethod("GET");
+		urlConn.setDoOutput(true);
+		Scanner scanner = new Scanner(new InputStreamReader(urlConn.getInputStream()));
+		String outputJson = "";
+		while (scanner.hasNext()) {
+			outputJson += scanner.nextLine();
+		}
+		System.out.println(outputJson);
+		scanner.close();
+		User user = new Gson().fromJson(outputJson, User.class);
+		//ObjectifyService.ofy().save().entity(user).now();
+		HttpSession session = req.getSession();
+		session.setAttribute("user", user);
+		req.getRequestDispatcher("/main").forward(req, resp);
+
+	}
+
+	private void signInWithGoogle(HttpServletRequest req, HttpServletResponse resp)
+			throws IOException, ServletException {
+		String code = req.getParameter("code");
+		// String redirectUrl =
+		// "http://v1-dot-login-app-171316.appspot.com/login/oauth2callback";
+
+		System.out.println("Google");
+		String redirectUrl = "http://localhost:8888/login/oauth2callback";
+		String urlParameters = "code=" + code
+				+ "&client_id=657816056670-m7lhu5lemeqpittvac8nlfqlffk3l5ki.apps.googleusercontent.com"
+				+ "&scope=https://www.googleapis.com/auth/user.birthday.read https://www.googleapis.com/auth/userinfo.email"
+				+ "&access_type=offline" + "&client_secret=q0qS6sVUNyAhh2-TrdUpQwlx" + "&redirect_uri=" + redirectUrl
+				+ "&grant_type=authorization_code";
+		URL url = new URL("https://accounts.google.com/o/oauth2/token");
+		URLConnection urlConn = url.openConnection();
+		urlConn.setDoOutput(true);
+		OutputStreamWriter writer = new OutputStreamWriter(urlConn.getOutputStream());
+		writer.write(urlParameters);
+		writer.flush();
+
+		BufferedReader in = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
+		String decodedString;
+		StringBuilder result = new StringBuilder();
+
+		while ((decodedString = in.readLine()) != null) {
+			result.append(decodedString);
+		}
+		in.close();
+
+		System.out.println("Result: " + result.toString());
+
+		JsonObject json = (JsonObject) new JsonParser().parse(result.toString());
+		String access_token = json.get("access_token").getAsString();
+		System.out.println(access_token);
 		url = new URL("https://www.googleapis.com/oauth2/v1/userinfo?access_token=" + access_token);
 		urlConn = url.openConnection();
 
@@ -232,7 +281,6 @@ public class LoginServlet extends HttpServlet {
 		while (scanner.hasNext()) {
 			outputJson += scanner.nextLine();
 		}
-
 		System.out.println(outputJson);
 		scanner.close();
 		User user = new Gson().fromJson(outputJson, User.class);

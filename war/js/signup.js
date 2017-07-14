@@ -93,7 +93,6 @@ function validationSignUp() {
 	}
 	var password = document.getElementById('password').value;
 	var radios = document.getElementsByName("gender");
-
 	var gender = "";
 	for (var i = 0; i < radios.length; i++) {
 		if (radios[i].checked) {
