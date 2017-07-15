@@ -1,55 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<web-app xmlns="http://java.sun.com/xml/ns/javaee" version="2.5">
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns="http://java.sun.com/xml/ns/javaee"
+xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	<servlet>
-		<servlet-name>HomeServlet</servlet-name>
-		<servlet-class>com.full.servlet.HomeServlet</servlet-class>
+		<servlet-name>Login</servlet-name>
+		<servlet-class>com.fulllearn.servlet.Login</servlet-class>
 	</servlet>
-
 	<servlet-mapping>
-		<servlet-name>HomeServlet</servlet-name>
-		<url-pattern>/home</url-pattern>
-		<url-pattern>/main</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<servlet-name>LoginServlet</servlet-name>
-		<servlet-class>com.full.servlet.LoginServlet</servlet-class>
-	</servlet>
-
-	<servlet-mapping>
-		<servlet-name>LoginServlet</servlet-name>
-		<url-pattern>/login/oauth2callback</url-pattern>
+		<servlet-name>Login</servlet-name>
 		<url-pattern>/login</url-pattern>
-		<url-pattern>/signup</url-pattern>
-		<url-pattern>/gotosignup</url-pattern>
-
-
+		<url-pattern>/oauth/callback</url-pattern>
 	</servlet-mapping>
-
+	
 	<servlet>
-		<servlet-name>LogoutServlet</servlet-name>
-		<servlet-class>com.full.servlet.LogoutServlet</servlet-class>
+		<servlet-name>Dashboard</servlet-name>
+		<servlet-class>com.fulllearn.servlet.Dashboard</servlet-class>
 	</servlet>
-
 	<servlet-mapping>
-		<servlet-name>LogoutServlet</servlet-name>
-		<url-pattern>/logoutconfirm</url-pattern>
-		<url-pattern>/logout</url-pattern>
+		<servlet-name>Dashboard</servlet-name>
+		<url-pattern>/dashboard</url-pattern>
+		
 	</servlet-mapping>
-
-	<filter>
-		<filter-name>ObjectifyFilter</filter-name>
-		<filter-class>com.googlecode.objectify.ObjectifyFilter</filter-class>
-	</filter>
-
-	<filter-mapping>
-		<filter-name>ObjectifyFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-
-	<listener>
-		<listener-class>com.full.helper.OfyHelper</listener-class>
-	</listener>
-
+	
+	<servlet>
+		<servlet-name>Logout</servlet-name>
+		<servlet-class>com.fulllearn.servlet.Logout</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Logout</servlet-name>
+		<url-pattern>/logout</url-pattern>
+		
+	</servlet-mapping>
+	
 	<welcome-file-list>
 		<welcome-file>WEB-INF/html/login.html</welcome-file>
 	</welcome-file-list>
