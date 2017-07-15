@@ -2,37 +2,41 @@ package com.full.model;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+//import com.fasterxml.jackson.annotation.JsonProperty;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 
 @Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
-	private String given_name;
-	private String family_name;
+	// @JsonProperty("given_name")
+	private String firstName;
+	// @JsonProperty("family_name")
+	private String lastName;
 	@Id
 	private String email;
 	private String password;
 	private long dateofBirth;
 	private String gender;
-	//private long id;
 	private String picture;
 
-	public String getGiven_name() {
-		return given_name;
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public void setGiven_name(String given_name) {
-		this.given_name = given_name;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
-	public String getFamily_name() {
-		return family_name;
+	public String getLastName() {
+		return lastName;
 	}
 
-	public void setFamily_name(String family_name) {
-		this.family_name = family_name;
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
 	public String getEmail() {
@@ -43,14 +47,11 @@ public class User implements Serializable {
 		this.email = email;
 	}
 
-	/*public long getId() {
-		return id;
-	}
-
-	public void setId(long id) {
-		this.id = id;
-	}
-*/
+	/*
+	 * public long getId() { return id; }
+	 * 
+	 * public void setId(long id) { this.id = id; }
+	 */
 	public String getPicture() {
 		return picture;
 	}
@@ -82,8 +83,9 @@ public class User implements Serializable {
 	public void setGender(String gender) {
 		this.gender = gender;
 	}
-@Override
-public String toString() {
-	return given_name + " "+ family_name;
-}
+
+	@Override
+	public String toString() {
+		return firstName + " " + lastName;
+	}
 }

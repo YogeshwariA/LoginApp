@@ -30,6 +30,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.xml.bind.DatatypeConverter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.full.model.AWData;
+import com.full.model.AWResponse;
 import com.full.model.User;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -41,7 +44,6 @@ import com.google.appengine.api.datastore.EntityNotFoundException;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;*/
 import com.googlecode.objectify.ObjectifyService;
-
 @SuppressWarnings("serial")
 public class LoginServlet extends HttpServlet {
 	DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -60,7 +62,6 @@ public class LoginServlet extends HttpServlet {
 			System.out.println("In Service");
 			if ((req.getRequestURI().contains("oauth2callback"))) {
 				try {
-					// signInWithGoogle(req, resp);
 					signInwithAnywhereWorks(req, resp);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -70,15 +71,6 @@ public class LoginServlet extends HttpServlet {
 			}
 		}
 
-		/*
-		 * else if ("get".equalsIgnoreCase(method)) { if
-		 * ((req.getRequestURI().contains("staging"))) { try {
-		 * signUpWithGoogle(req, resp); } catch (Exception e) {
-		 * e.printStackTrace(); } } else if
-		 * (req.getRequestURI().contains("/gotosignup")) {
-		 * req.getRequestDispatcher("/WEB-INF/html/signup.html").forward(req,
-		 * resp); } }
-		 */
 	}
 
 	@Override
@@ -139,12 +131,6 @@ public class LoginServlet extends HttpServlet {
 
 	}
 
-	/*
-	 * private Entity checkUserDetails(String emailAsKey) { Key key =
-	 * KeyFactory.createKey("Users", emailAsKey); try { return
-	 * datastore.get(key); } catch (EntityNotFoundException e) { return null; }
-	 * }
-	 */
 	private void signUpUser(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException, ParseException, InvalidKeyException, NoSuchAlgorithmException,
 			NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
@@ -161,10 +147,10 @@ public class LoginServlet extends HttpServlet {
 			User user = ObjectifyService.ofy().load().type(User.class).id(emailId).now();
 			if (user == null) {
 				user = new User();
-				user.setGiven_name(firstName);
+				user.setFirstName(firstName);
 				user.setDateofBirth(new SimpleDateFormat("yyyy-dd-mm").parse(dateOfBirth).getTime());
 				user.setEmail(emailId);
-				user.setFamily_name(lastName);
+				user.setLastName(lastName);
 				user.setPassword(encrypt(password, "E1BB465D57CAE7ACDBBE8091F9CE83DF"));
 				user.setGender(gender);
 				ObjectifyService.ofy().save().entity(user).now();
@@ -186,7 +172,6 @@ public class LoginServlet extends HttpServlet {
 			resp.getWriter().println("{\"message\":\"Please give correct credentials\"}");
 		}
 	}
-
 	private void signInwithAnywhereWorks(HttpServletRequest req, HttpServletResponse resp)
 			throws IOException, ServletException {
 		String redirectUrl = "http://localhost:8888/login/oauth2callback";
@@ -216,12 +201,11 @@ public class LoginServlet extends HttpServlet {
 
 		JsonObject json = (JsonObject) new JsonParser().parse(result.toString());
 		String access_token = json.get("access_token").getAsString();
-		// https://api.anywhereworks.com/api/v1/user/me
 
 		url = new URL("https://api-dot-staging-fullspectrum.appspot.com//api/v1/user/me");
 		urlConn = (HttpURLConnection) url.openConnection();
 		urlConn.setRequestProperty("Content-Type", "application/json");
-		urlConn.setRequestProperty("Authorization", "Bearer "  + access_token);
+		urlConn.setRequestProperty("Authorization", "Bearer " + access_token);
 		urlConn.setRequestMethod("GET");
 		urlConn.setDoOutput(true);
 		Scanner scanner = new Scanner(new InputStreamReader(urlConn.getInputStream()));
@@ -231,12 +215,17 @@ public class LoginServlet extends HttpServlet {
 		}
 		System.out.println(outputJson);
 		scanner.close();
-		User user = new Gson().fromJson(outputJson, User.class);
-		//ObjectifyService.ofy().save().entity(user).now();
-		HttpSession session = req.getSession();
-		session.setAttribute("user", user);
-		req.getRequestDispatcher("/main").forward(req, resp);
-
+		ObjectMapper mapper = new ObjectMapper();
+		AWResponse awResponse = mapper.readValue(outputJson, AWResponse.class);
+		
+		AWData awData = awResponse.getData();
+		if (null != awData) {
+			User user = awData.getUser();
+			// ObjectifyService.ofy().save().entity(user).now();
+			HttpSession session = req.getSession();
+			session.setAttribute("user", user);
+			req.getRequestDispatcher("/main").forward(req, resp);
+		}
 	}
 
 	private void signInWithGoogle(HttpServletRequest req, HttpServletResponse resp)

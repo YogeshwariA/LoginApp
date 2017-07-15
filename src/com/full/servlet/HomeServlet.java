@@ -32,8 +32,8 @@ public class HomeServlet extends HttpServlet {
 			resp.setContentType("text/html");
 			String responseString = "<div id='welcomeDiv' class='card' style='top:50px;margin-left: 500px; height: 200px; width: 300px;'>"
 					+ "<div class='card-header' style='color: white; background-color: darkcyan;'>Welcome !!!</div>"
-					+ "<div class='card-block'>" + "<span id='usernameSpan'>" + user.getGiven_name() + " "
-					+ user.getFamily_name() + " </span><img align='right' id='profilePic'"
+					+ "<div class='card-block'>" + "<span id='usernameSpan'>" + user.getFirstName() + " "
+					+ user.getLastName()+ " </span><img align='right' id='profilePic'"
 					+ "style='border-radius:50px' width='50px' height='50px' src='" + user.getPicture() + " '></img>"
 					+ "<a align='right' class='link' style='text-align:right' href=/logoutconfirm>Logout</a></div></div>";
 
